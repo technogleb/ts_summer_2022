@@ -261,7 +261,15 @@ class TimeSeriesPredictor(BaseEstimator):
 
         delta = get_timedelta_from_granularity(self.granularity)
         next_timestamp = pd.to_datetime(ts.index[-1]) + delta
-        lag_dict = {'lag_{}'.format(i): [ts[-i]] for i in range(1, self.num_lags + 1)}
+
+        '''we return lags in the
+        form in which they
+        were submitted to the
+        model'''
+        lag_dict = {'lag_{}'.format(i): [ts[-i]] for i in range(self.num_lags, 0, -1)}
+        #lag_dict = {'lag_{}'.format(i): [ts[-i]] for i in range(1, self.num_lags + 1)}
+
+
         df = pd.DataFrame.from_dict(lag_dict)
         df.index = [next_timestamp]
         df = self.enrich(df)
